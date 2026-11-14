@@ -1,0 +1,43 @@
+# --- Secrets (never in Git) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.kdbx
+secrets/
+credentials*
+*.tfvars
+!*.tfvars.example
+s3.env
+!s3.env.example
+
+# --- Terraform ---
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+*.tfplan
+crash.log
+
+# --- Build output ---
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.pio/
+build/
+
+# --- OS / editors ---
+.DS_Store
+Thumbs.db
+~$*
+.vscode/
+.idea/
+*.swp
+
+# --- Local work notes ---
+.superpowers/
+preseed-local.cfg

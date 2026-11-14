@@ -1,0 +1,7 @@
+Photos from Unsplash (Unsplash license: https://unsplash.com/license), stored here as WebP
+and cropped to 3:2 so the site does not depend on images.unsplash.com.
+
+cover-*.webp        Alexandru-Bogdan Ghita (@bogzilla)        https://unsplash.com/photos/UeYkqQh4PoI
+txuleta-*.webp      Emerson Vieira (@emersonvieira)           https://unsplash.com/photos/3wzps8KbdCQ
+vegetables-*.webp   Ella Olsson (@ellaolsson)                 https://unsplash.com/photos/KPDbRyFOTnE
+cheesecake-*.webp   mahyar mirghasemi (@mahyar_mirghasmi)     https://unsplash.com/photos/z35wEXJ8kvA

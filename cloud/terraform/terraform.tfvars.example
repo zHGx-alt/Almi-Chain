@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars (kept out of Git by .gitignore) and fill in.
+email    = "team@example.com"
+ssh_cidr = "81.0.0.1/32" # our public IP: curl -s https://checkip.amazonaws.com
+
+# Optional
+# bucket = "almi-chain-web-2026"
+# domain = "almichain1.duckdns.org"
+
+# The DuckDNS token is NOT written here: pass it as an environment variable
+#   export TF_VAR_duckdns_token='...'

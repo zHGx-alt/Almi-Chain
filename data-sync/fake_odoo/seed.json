@@ -1,0 +1,26 @@
+{
+  "account.tax": [
+    {"id": 1, "name": "10% VAT", "type_tax_use": "sale", "amount": 10, "amount_type": "percent", "tax_scope": "service"},
+    {"id": 2, "name": "21% VAT", "type_tax_use": "sale", "amount": 21, "amount_type": "percent", "tax_scope": "consu"}
+  ],
+  "pos.category": [
+    {"id": 1, "name": "Starters"},
+    {"id": 2, "name": "Mains"},
+    {"id": 3, "name": "Desserts"},
+    {"id": 4, "name": "Drinks"}
+  ],
+  "product.template": [
+    {"id": 1,  "name": "Gilda",                "list_price": 2.50,  "available_in_pos": true, "pos_categ_ids": [1]},
+    {"id": 2,  "name": "Croquetas de jamón",   "list_price": 8.00,  "available_in_pos": true, "pos_categ_ids": [1]},
+    {"id": 3,  "name": "Bacalao al pil-pil",   "list_price": 21.00, "available_in_pos": true, "pos_categ_ids": [2]},
+    {"id": 4,  "name": "Txuleta a la brasa",   "list_price": 50.00, "available_in_pos": true, "pos_categ_ids": [2]},
+    {"id": 5,  "name": "Marmitako",            "list_price": 15.00, "available_in_pos": true, "pos_categ_ids": [2]},
+    {"id": 6,  "name": "Pimientos de Gernika", "list_price": 7.00,  "available_in_pos": true, "pos_categ_ids": [1]},
+    {"id": 7,  "name": "Tarta de queso",       "list_price": 6.50,  "available_in_pos": true, "pos_categ_ids": [3]},
+    {"id": 8,  "name": "Pantxineta",           "list_price": 6.00,  "available_in_pos": true, "pos_categ_ids": [3]},
+    {"id": 9,  "name": "Caña",                 "list_price": 2.50,  "available_in_pos": true, "pos_categ_ids": [4]},
+    {"id": 10, "name": "Txakoli (copa)",       "list_price": 3.50,  "available_in_pos": true, "pos_categ_ids": [4]},
+    {"id": 11, "name": "Agua mineral",         "list_price": 2.00,  "available_in_pos": true, "pos_categ_ids": [4]},
+    {"id": 12, "name": "Café",                 "list_price": 1.60,  "available_in_pos": true, "pos_categ_ids": [4]}
+  ]
+}

@@ -1,0 +1,44 @@
+# One-command demo: the database with all its tests, a fake Odoo, and the menu sync.
+#   docker compose up --build --abort-on-container-exit --exit-code-from sync
+# The passwords below are for this throwaway demo only.
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: demo-admin          # demo only
+      POS_PASSWORD: demo-pos                 # demo only
+      REPORTING_PASSWORD: demo-reporting     # demo only
+    volumes:
+      - ./database:/database:ro
+      - ./database/init/run-all.sh:/docker-entrypoint-initdb.d/run-all.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD=demo-reporting psql -h localhost -U reporting -d almi_chain -c 'SELECT 1' >/dev/null"]
+      interval: 2s
+      retries: 60
+
+  fake-odoo:
+    image: python:3.12-slim
+    command: ["python", "/app/fake_odoo.py"]
+    environment:
+      FAKE_ODOO_PASSWORD: demo-odoo          # demo only
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./data-sync/fake_odoo:/app:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8069))"]
+      interval: 2s
+      retries: 30
+
+  sync:
+    build: ./data-sync
+    depends_on:
+      db:
+        condition: service_healthy
+      fake-odoo:
+        condition: service_healthy
+    environment:
+      ODOO_URL: http://fake-odoo:8069
+      ODOO_PASSWORD: demo-odoo               # demo only
+      PGHOST: db
+      PGPASSWORD: demo-reporting             # demo only
+      ALMI_PSQL: psql -X -U reporting -d almi_chain

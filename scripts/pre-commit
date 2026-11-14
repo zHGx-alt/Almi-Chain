@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Blocks the commit if gitleaks finds secrets in the staged changes.
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "[pre-commit] gitleaks is not installed; skipping the scan (CI runs it anyway)."
+  exit 0
+fi
+gitleaks protect --staged --redact --config .gitleaks.toml || {
+  echo "[pre-commit] Possible secret detected. Remove it from the commit before continuing."
+  exit 1
+}

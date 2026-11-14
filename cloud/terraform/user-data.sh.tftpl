@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# First boot of the EC2 instance (rendered by Terraform). Log in /var/log/almichain-user-data.log
+set -euo pipefail
+exec > >(tee -a /var/log/almichain-user-data.log) 2>&1
+
+ELASTIC_IP='${elastic_ip}'
+DOMAIN='${domain}'
+
+# 1. Wait until Terraform attaches the elastic IP (IMDSv2)
+for i in $(seq 60); do
+  TOKEN=$(curl -s -X PUT http://169.254.169.254/latest/api/token -H 'X-aws-ec2-metadata-token-ttl-seconds: 60')
+  IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4 || true)
+  [[ $IP == "$ELASTIC_IP" ]] && break
+  sleep 10
+done
+echo "Public IP: $IP"
+
+# 2. DuckDNS (only if a token was given; otherwise update it by hand on duckdns.org)
+%{ if duckdns_token != "" ~}
+curl -s "https://www.duckdns.org/update?domains=$${DOMAIN%%.duckdns.org}&token=${duckdns_token}&ip=$ELASTIC_IP" ; echo
+%{ endif ~}
+
+# 3. Let's Encrypt checks the domain against this IP: wait until DNS points here (20 min max)
+for i in $(seq 120); do
+  [[ $(getent ahostsv4 "$DOMAIN" | awk 'NR==1{print $1}') == "$ELASTIC_IP" ]] && break
+  sleep 10
+done
+
+# 4. Web server installer (nginx, certbot, S3 sync and security headers)
+cat > /root/install-web-server.sh <<'SCRIPT'
+${script}
+SCRIPT
+chmod 700 /root/install-web-server.sh
+BUCKET='${bucket}' DOMAIN="$DOMAIN" EMAIL='${email}' REGION='${region}' /root/install-web-server.sh

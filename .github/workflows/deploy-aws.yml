@@ -1,0 +1,37 @@
+# Publishes also-built/web/ to the S3 bucket. The EC2 instance pulls it every 5 minutes.
+# Manual only: the AWS Learner Lab is not always running and its credentials expire with each session.
+# Credentials (from the lab's "AWS Details -> AWS CLI") go in the repository secrets
+# AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN.
+# Without secrets, the job warns and ends without error.
+name: deploy-aws
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-aws
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_DEFAULT_REGION: us-east-1
+      BUCKET: almi-chain-web-2026
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Publish to S3
+        run: |
+          if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+            echo "::warning::No AWS credentials in the secrets: nothing published (see the header of this workflow)."
+            exit 0
+          fi
+          aws sts get-caller-identity --query Arn --output text
+          aws s3 sync also-built/web/ "s3://$BUCKET/" --delete --exclude "README.md" --exclude ".gitkeep"
+          echo "Published. The EC2 instance pulls it within 5 minutes (or right away with: sudo update-web)."
